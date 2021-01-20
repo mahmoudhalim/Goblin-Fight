@@ -3,3 +3,5 @@ Game
 *.jpg
 .vscode
 tt.py
+*.mp3
+*.wav
