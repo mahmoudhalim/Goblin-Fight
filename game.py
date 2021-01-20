@@ -125,6 +125,7 @@ def redrawGameWindow():
 # mainloop
 man = player(200, 410, 64, 64)
 goblin = enemy(100, 410, 64, 64, 450)
+shootLoop = 0
 bullets = []
 run = True
 
@@ -138,6 +139,10 @@ def is_hit(bullet: projectile):
 
 while run:
     clock.tick(27)
+    if shootLoop > 0:
+        shootLoop +=1
+    if shootLoop > 3:
+        shootLoop=0
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -152,13 +157,14 @@ while run:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_SPACE]:
+    if keys[pygame.K_SPACE]and shootLoop == 0:
         if len(bullets) < 7:
             bullets.append(projectile((round(man.x + man.width//2)),
                                       (round(man.y + man.height//2)),
                                       (0, 0, 0),
                                       5,
                                       1 if man.right else -1))
+        shootLoop = 1
     if keys[pygame.K_LEFT] and man.x > man.vel:
         man.x -= man.vel
         man.left = True
