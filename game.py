@@ -47,6 +47,50 @@ class player(object):
                 win.blit(char, (self.x, self.y))
 
 
+class enemy(object):
+    walkRight = [pygame.image.load('R1E.png'), pygame.image.load('R2E.png'), pygame.image.load('R3E.png'), pygame.image.load('R4E.png'), pygame.image.load('R5E.png'), pygame.image.load(
+        'R6E.png'), pygame.image.load('R7E.png'), pygame.image.load('R8E.png'), pygame.image.load('R9E.png'), pygame.image.load('R10E.png'), pygame.image.load('R11E.png')]
+    walkLeft = [pygame.image.load('L1E.png'), pygame.image.load('L2E.png'), pygame.image.load('L3E.png'), pygame.image.load('L4E.png'), pygame.image.load('L5E.png'), pygame.image.load(
+        'L6E.png'), pygame.image.load('L7E.png'), pygame.image.load('L8E.png'), pygame.image.load('L9E.png'), pygame.image.load('L10E.png'), pygame.image.load('L11E.png')]
+
+    def __init__(self, x, y, width, height, end):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.end = end
+        self.path = [self.x, self.end]
+        self.walkcount = 0
+        self.vel = 3
+
+    def draw(self, win):
+        self.move()
+        if self.walkcount + 1 >= 33:
+            self.walkcount = 0
+        if self.vel > 0:
+            win.blit(self.walkRight[self.walkcount//3], (self.x, self.y))
+            self.walkcount += 1
+        else:
+            win.blit(self.walkLeft[self.walkcount//3], (self.x, self.y))
+            self.walkcount += 1
+
+    def move(self):
+        if self.vel > 0:
+            if self.x + self.vel < self.path[1]:
+                self.x += self.vel
+            else:
+                self.vel = -1 * self.vel
+                self.walkcount = 0
+                self.x += self.vel
+        else:
+            if self.x - self.vel > self.path[0]:
+                self.x += self.vel
+            else:
+                self.vel = -1 * self.vel
+                self.walkcount = 0
+                self.x += self.vel
+
+
 class projectile(object):
     def __init__(self, x, y, color, radius, dir):
         self.x = x
@@ -63,6 +107,7 @@ class projectile(object):
 def redrawGameWindow():
     win.blit(bg, (0, 0))
     man.draw(win)
+    goblin.draw(win)
     for bullet in bullets:
         bullet.draw(win)
     pygame.display.update()
@@ -70,6 +115,7 @@ def redrawGameWindow():
 
 # mainloop
 man = player(200, 410, 64, 64)
+goblin = enemy(100, 410, 64, 64, 450)
 bullets = []
 run = True
 while run:
